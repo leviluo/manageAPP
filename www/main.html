@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>奇正交易管理端</title>
+    <script type="text/javascript" src="./js/ajax.js"></script>
+    <script type="text/javascript" src="./js/event.js"></script>
+    <script type="text/javascript" src="./js/utils.js"></script>
+    <script type="text/javascript" src="./js/dialog.js"></script>
+    <link rel="stylesheet" href="./css/main.css" />
+</head>
+	
+<body>
+
+<div>
+
+	<nav>
+        <header>
+            <h3>奇正管理端</h3>&nbsp;&nbsp;
+            <a>帮助文档</a>
+            <button class="btn-primary" style="float:right;margin-top:5px">退出</button>
+        </header>
+    </nav>
+
+    <div class="mainContent">
+
+        <div id='modal'>
+              <div class="content">
+                <div class="content-header">
+                  <b></b>
+                  <div class="close" onclick="document.getElementById('modal').style.display = 'none'">×</div>
+                </div>
+                <div class="content-body">
+                </div>
+              </div>
+        </div>
+
+        <div class="leftNav">
+            <ul>
+                <li><a onclick="showChilds('systemManage')">系统管理<span>&gt;</span></a></li>
+                <li><a onclick="showChilds('trade')">交易<span>&gt;</span></a>
+                    <ul style="display:none">
+                        <li><a onclick="showChilds('catelogyManage')">品种管理<span>&gt;</span></a></li>
+                        <li><a onclick="showChilds('contractManage')">合约管理<span>&gt;</span></a></li>
+                    </ul>
+                </li>
+                <li><a onclick="showChilds('accountManage')">账户<span>&gt;</span></a></li>
+            </ul>
+        </div>
+
+        <div class="rightContent">
+            <div id="dialogContent">
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="./js/es6-promise.js"></script>
+<script type="text/javascript">
+
+    var dialogObjects = {};
+
+    function showChilds(key){
+        var e = window.event || event
+        var me = e.srcElement.parentNode;
+        if (me.getElementsByTagName('ul')[0]) { 
+            if(me.getElementsByTagName('ul')[0].style.display == "none"){
+               var rotate =  "rotate(90deg)"
+               var display =  "block"
+            }else{
+               var rotate =  "rotate(0deg)"
+               var display =  "none"
+            }
+            me.getElementsByTagName('span')[0].style.transform = rotate
+            for (var i = 0; i < me.getElementsByTagName('ul').length; i++) {
+                me.getElementsByTagName('ul')[i].style.display = display
+            };
+        }else{
+            dialogObjects[key] = new dialog({
+                header:"合约管理",
+                queryCondition:[
+                    {header:"合约代码",key:1},
+                    {header:"合约名称",key:3},
+                ],
+                queryUrl:"/queryContractList",
+                tableHeader:[
+                            {key:1,value:"合约代码"},{key:4,value:"交易所"},
+                            {key:2,value:"品种名称"},{key:3,value:"合约名称"},
+                            {key:9,value:"合约乘数"},{key:10,value:"最小变动价位"},
+                            {key:12,value:"到期日期"},{key:13,value:"保证金大边收取"},
+                ]
+            })
+            dialogObjects[key].init().then(function(element){
+                document.getElementById('dialogContent').appendChild(element)
+            })
+        }
+    }
+    
+</script>
+
+</body>
+
+</html>
